@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:TishApp/TishApp/Services/Logout/LogoutRepository.dart';
 import 'package:TishApp/TishApp/Services/getNewTokenService.dart';
+import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -13,7 +14,12 @@ class DioSettings {
   static Future<Dio> getDio() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     Dio dio = Dio();
-
+    (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+        (HttpClient client) {
+      client.badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
+        };
+  // dio.options.connectTimeout = 5000;
     dio.interceptors.add(
         InterceptorsWrapper(onRequest: (RequestOptions options, handler) async {
       DateTime now = new DateTime.now();
@@ -37,15 +43,15 @@ class DioSettings {
           return handler.next(options);
         }
       } else {
-        options.headers["Authorization"] =
-            "Bearer ${prefs.getString("accessToken")}";
+        // options.headers["Authorization"] =
+        //     "Bearer ${prefs.getString("accessToken")}";
         options.headers["Content-Type"] = "application/json";
         return handler.next(options);
       }
     }, onResponse: (response, handler) async {
       return handler.next(response);
     }, onError: (error, handler) {
-      print(error.response!.statusCode.toString());
+      print(error.error);
       return handler.next(error);
     }));
     return dio;

@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:dio/adapter.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
@@ -12,15 +14,24 @@ class RegisterService {
   Future<bool> registerService(
       String firstName, String lastName, String password, String email) async {
     dynamic responseJson, result;
+    Dio dio = new Dio();
+  (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+    (HttpClient client) {
+  client.badCertificateCallback =
+      (X509Certificate cert, String host, int port) => true;
+    };
     try {
-      final response = await http.post(Uri.parse(settings.login_url), headers: {
+      final response = await dio.post((settings.login_url), 
+      options: Options(headers: {
         "Content-Type": "application/x-www-form-urlencoded",
-      }, body: {
+      }),
+      data: {
         "client_secret": settings.client_secret_register,
         "grant_type": settings.grant_type_register,
         "client_id": settings.client_id_register
       });
-      responseJson = jsonDecode(returnResponse(response));
+      if(response.statusCode == 200 || response.statusCode == 201)
+        responseJson = response.data;
       String accessToken = responseJson['access_token'];
       var temp = {
         "username": '$firstName',
@@ -33,18 +44,38 @@ class RegisterService {
           {"type": "password", "value": password, "temporary": "false"}
         ]
       };
-      var data = jsonEncode(temp);
-      final responseRegister = await http.post(Uri.parse(settings.Register_url),
-          headers: {
+      var data = (temp);
+      final responseRegister = await dio.post((settings.Register_url),
+          options: Options(headers: {
             'Authorization': 'Bearer $accessToken',
             "content-type": "application/json",
             "accept": "application/json",
-          },
-          body: data);
-      await AddToDB(firstName, lastName, email, accessToken);
-      result = returnResponse(responseRegister);
+          }),
+          data: data);
+      if(response.statusCode == 200 || response.statusCode == 201)
+        result = responseRegister.data;
+
+      temp = {
+        "Username": '$firstName $lastName',
+        "Email": email
+      };
+      data = (temp);
+      final responseRegister2 =
+          await dio.post((settings.save_User_In_DB_url),
+          options: Options(
+            headers: {
+                'Authorization': 'Bearer $accessToken',
+                "content-type": "application/json",
+                "accept": "application/json",
+              }
+          ),
+              data: data);
+      print("Done");
     } on SocketException {
       print("ERROR");
+      throw Exception('No Internet Connection');
+    } catch (e){
+      print(e);
       throw Exception('No Internet Connection');
     }
     return true;
@@ -52,20 +83,28 @@ class RegisterService {
 
   Future<bool> AddToDB(String firstName, String lastName, String email,
       String accessToken) async {
+        Dio dio = new Dio();
+  (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+    (HttpClient client) {
+  client.badCertificateCallback =
+      (X509Certificate cert, String host, int port) => true;
+    };    
     try {
       var temp = {
         "Username": '$firstName $lastName',
         "Email": email,
       };
-      var data = jsonEncode(temp);
+      var data = (temp);
       final responseRegister =
-          await http.post(Uri.parse(settings.save_User_In_DB_url),
-              headers: {
+          await dio.post((settings.save_User_In_DB_url),
+          options: Options(
+            headers: {
                 'Authorization': 'Bearer $accessToken',
                 "content-type": "application/json",
                 "accept": "application/json",
-              },
-              body: data);
+              }
+          ),
+              data: data);
       return true;
     } catch (e) {
       return false;
@@ -73,17 +112,17 @@ class RegisterService {
   }
 
   @visibleForTesting
-  dynamic returnResponse(http.Response response) {
+  dynamic returnResponse(Response response) {
     switch (response.statusCode) {
       case 200:
       case 201:
-        dynamic responseJson = (response.body);
+        dynamic responseJson = (response.data);
         return responseJson;
       case 400:
-        throw Exception(response.body.toString());
+        throw Exception(response.data.toString());
       case 401:
       case 403:
-        throw Exception(response.body.toString());
+        throw Exception(response.data.toString());
       case 500:
       default:
         throw Exception('Error occured while communication with server' +

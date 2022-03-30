@@ -6,9 +6,9 @@ import 'package:flutter/cupertino.dart';
 class AuthViewModel with ChangeNotifier {
   // ApiResponse _apiResponse = ApiResponse.loading('Fetching artist data');
 
-  late bool _login_response = false;
-  late bool _register_response = false;
-  late bool _logout_response = false;
+  bool _login_response = false;
+  bool _register_response = false;
+  bool _logout_response = false;
 
   // ignore: non_constant_identifier_names
   Future<void> Login(String username, String password) async {

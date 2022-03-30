@@ -359,18 +359,17 @@ class TishAppDescriptionState extends State<TishAppDescription> {
                               child: IconButton(
                                   onPressed: () {
                                         _dialog = RatingDialog(
-      title: 'Review Dialog',
+      title: Text('Review Dialog'),
       message:
-          'Tap a star to set your rating. Add more description here if you want.',
+          Text('Tap a star to set your rating. Add more description here if you want.'),
       image: Icon(Icons.reviews),
-      submitButton: 'Submit',
       onSubmitted: (response) async {
         await ReviewRepository().AddReviewToPlace(prefs.getString('email').toString(),
-            snapshot.data!.Place_ID, response.rating, response.comment);
+            snapshot.data!.Place_ID, response.rating.toInt(), response.comment);
             setState(() {
               
             });
-      },
+      }, submitButtonText: 'Submit',
     );
                                     showDialog(
                                       context: context,

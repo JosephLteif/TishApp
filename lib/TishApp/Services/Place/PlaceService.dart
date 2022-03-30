@@ -17,7 +17,7 @@ class PlaceService {
       final response = await dio.get((_baseUrl + '/Places'));
       print(response.statusCode);
       responseJson = returnResponse(response);
-    } on Exception catch (e) {
+    } catch (e) {
       print(e.toString());
     }
     return responseJson;
@@ -66,10 +66,10 @@ class PlaceService {
         dynamic responseJson = (response.data);
         return responseJson;
       case 400:
-        throw Exception(response.body.toString());
+        throw Exception(response.data.toString());
       case 401:
       case 403:
-        throw Exception(response.body.toString());
+        throw Exception(response.data.toString());
       case 500:
       default:
         throw Exception('Error occured while communication with server' +

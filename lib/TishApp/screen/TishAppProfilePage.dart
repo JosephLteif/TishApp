@@ -122,7 +122,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           avgrating += int.parse(item.Rating.toString());
                         }
                         reviewsNum = reviewsList.length;
-                        AvgRating = avgrating~/reviewsNum;
+                        AvgRating = reviewsNum!=0?avgrating~/reviewsNum:0;
     return Row(
       children: [
         ProfileRowButton(number: likedPlacesNum.toString(), text: 'Liked Places'),
@@ -207,7 +207,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           avgrating += int.parse(item.Rating.toString());
                         }
                         reviewsNum = reviewsList.length;
-                        AvgRating = avgrating~/reviewsNum;
+                        AvgRating = reviewsNum!=0?avgrating~/reviewsNum:0;
                           reviewsList.sort((a,b) => b.Updated_At.toString().compareTo(a.Updated_At.toString()));
                         return ListView.builder(
                             shrinkWrap: true,
@@ -231,7 +231,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                           shrinkWrap: true,
                                           physics:
                                               NeverScrollableScrollPhysics(),
-                                          itemCount: 5,
+                                          itemCount: snapshot.data!.reviews.length>5?5:snapshot.data!.reviews.length,
                                           itemBuilder: (context, index) {
                                             return Padding(
                                               padding:

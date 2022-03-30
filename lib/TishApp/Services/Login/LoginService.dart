@@ -30,8 +30,8 @@ class LoginService {
             "client_id": settings.client_id_login,
             "client_secret": settings.client_secret_login,
           });
-    } on Exception {
-      print("ERROR");
+    }catch (e) {
+      print(e);
       throw Exception('No Internet Connection');
     }
     return response.data;
