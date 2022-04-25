@@ -18,8 +18,8 @@ class DioSettings {
         (HttpClient client) {
       client.badCertificateCallback =
           (X509Certificate cert, String host, int port) => true;
-        };
-  // dio.options.connectTimeout = 5000;
+    };
+    // dio.options.connectTimeout = 5000;
     dio.interceptors.add(
         InterceptorsWrapper(onRequest: (RequestOptions options, handler) async {
       DateTime now = new DateTime.now();

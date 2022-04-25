@@ -13,8 +13,10 @@ class ReviewRepository {
     return list;
   }
 
-  Future<bool> AddReviewToPlace(String UserEmail, int PlaceID, int Rating, String Message) async {
-    bool response = await _ReviewService.AddReview(UserEmail, PlaceID, Rating, Message);
+  Future<bool> AddReviewToPlace(
+      String UserEmail, int PlaceID, int Rating, String Message) async {
+    bool response =
+        await _ReviewService.AddReview(UserEmail, PlaceID, Rating, Message);
     return response;
   }
 }

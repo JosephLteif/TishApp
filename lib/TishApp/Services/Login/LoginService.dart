@@ -30,7 +30,7 @@ class LoginService {
             "client_id": settings.client_id_login,
             "client_secret": settings.client_secret_login,
           });
-    }catch (e) {
+    } catch (e) {
       print(e);
       throw Exception('No Internet Connection');
     }

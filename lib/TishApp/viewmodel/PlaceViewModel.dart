@@ -14,16 +14,18 @@ class PlaceViewModel with ChangeNotifier {
       earnedBadges: [],
       place_type: Place_Type(Place_Type_ID: 'null', Type: 'null'));
 
-  Future<List<Place>> fetchAll() async {
+  PlaceViewModel() {
+    fetchAll();
+  }
+
+  Future<void> fetchAll() async {
     try {
       List<Place> response = await PlaceRepository().fetchAllPlace();
-      setSelectedPlaceList(response);
-      return response;
+      _placeList = response;
     } catch (e) {
       print(e);
     }
     notifyListeners();
-    return [];
   }
 
   Future<void> fetchOne(int id) async {
@@ -37,10 +39,11 @@ class PlaceViewModel with ChangeNotifier {
     notifyListeners();
   }
 
-    Future<String> fetchPlaceImage(String bucketName, String imageName) async {
-      String response = 'false';
+  Future<String> fetchPlaceImage(String bucketName, String imageName) async {
+    String response = 'false';
     try {
-      response = await PlaceRepository().fetchOnePlaceImage(bucketName, imageName);
+      response =
+          await PlaceRepository().fetchOnePlaceImage(bucketName, imageName);
       print("response =>>>> $response");
     } catch (e) {
       print(e);
@@ -48,27 +51,8 @@ class PlaceViewModel with ChangeNotifier {
     return response;
   }
 
-  Future<List<Place>> fetchByType(String type) async {
-    try {
-      List<Place> response = await PlaceRepository().fetchPlaceByType(type);
-      print("response =>>>> $response");
-      setSelectedPlaceList(response);
-      return response;
-    } catch (e) {
-      print(e);
-    }
-    notifyListeners();
-    return [];
-  }
-
   void setSelectedPlace(Place place) {
     this._place = place;
-    notifyListeners();
-  }
-
-  void setSelectedPlaceList(List<Place> place) {
-    this._placeList = [];
-    this._placeList = place;
     notifyListeners();
   }
 

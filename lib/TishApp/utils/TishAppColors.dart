@@ -1,5 +1,20 @@
 import 'dart:ui';
 
+import 'package:flutter/material.dart';
+
+MaterialColor mainColorTheme = MaterialColor(0xFFeb9e10, {
+  50: Color(0xFFeb9e10),
+  100: Color(0xFFeb9e10),
+  200: Color(0xFFeb9e10),
+  300: Color(0xFFeb9e10),
+  400: Color(0xFFeb9e10),
+  500: Color(0xFFeb9e10),
+  600: Color(0xFFeb9e10),
+  700: Color(0xFFeb9e10),
+  800: Color(0xFFeb9e10),
+  900: Color(0xFFeb9e10),
+});
+
 const TishApp_colorPrimary = Color(0xFF3B8BEA);
 const TishApp_colorPrimaryDark = Color(0xFF3B8BEA);
 const TishApp_colorAccent = Color(0xFF4ec77f);

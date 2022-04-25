@@ -8,7 +8,6 @@ class AuthViewModel with ChangeNotifier {
 
   bool _login_response = false;
   bool _register_response = false;
-  bool _logout_response = false;
 
   // ignore: non_constant_identifier_names
   Future<void> Login(String username, String password) async {
@@ -36,17 +35,6 @@ class AuthViewModel with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> Logout() async {
-    try {
-      setLogoutResponse(false);
-      bool response = await LogoutRepository().LogoutRepo();
-      setLogoutResponse(response);
-    } catch (e) {
-      print(e);
-    }
-    notifyListeners();
-  }
-
   void setLoginResponse(bool response) {
     _login_response = response;
     notifyListeners();
@@ -57,20 +45,11 @@ class AuthViewModel with ChangeNotifier {
     notifyListeners();
   }
 
-  void setLogoutResponse(bool response) {
-    _logout_response = response;
-    notifyListeners();
-  }
-
   bool get login_response {
     return _login_response;
   }
 
   bool get register_response {
     return _register_response;
-  }
-
-  bool get logout_response {
-    return _logout_response;
   }
 }

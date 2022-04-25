@@ -11,14 +11,11 @@ class LogoutRepository {
   LogoutService _LogoutService = LogoutService();
 
   // ignore: non_constant_identifier_names
-  Future<bool> LogoutRepo() async {
+  Future<void> LogoutRepo() async {
     bool response = await _LogoutService.logoutService();
     response ? _localStorage.clear() : null;
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setBool('IsLoggedIn', false);
-    navigator.currentState!.pushReplacement(
-      MaterialPageRoute(builder: (context) => LoginPage()),
-    );
-    return response;
+    navigator.currentState!.popUntil((route) => route.isFirst);
   }
 }

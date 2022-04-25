@@ -83,6 +83,8 @@ class User_Favorite_PlacesService {
 
   Future<bool> ifFavoritePlaceExists(String email, int PlaceID) async {
     Dio dio = await DioSettings.getDio();
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    email = prefs.getString('email').toString();
     try {
       final response = await dio
           .get((_baseUrl + '/User_Favorite_Places/Exists/$email/$PlaceID'));

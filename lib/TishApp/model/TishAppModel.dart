@@ -34,6 +34,12 @@ class Place {
       rating += double.parse(item['rating'].toString());
     }
     if (rating != 0) rating /= json['reviews'].length;
+    List<Review> reviews = [];
+    int tempindex = 1;
+    for (var item in json['reviews']) {
+      print(tempindex++);
+      reviews.add(Review.fromJson(item));
+    }
     Place temp = Place(
         Place_ID: json['place_ID'],
         Name: json['name'],
@@ -42,12 +48,12 @@ class Place {
         Created_at: json['created_at'],
         Updated_at: json['updated_at'],
         place_type: Place_Type.fromJson(json['place_Type']),
-        reviews: (json['reviews'].map((e) => Review.fromJson(e))).toList(),
+        reviews: reviews,
         user: json['user'],
         averageReviews: rating,
-        earnedBadges: json['earned_Badges'] != null?
-            json['earned_Badges'].map((e) => Place_Badge.fromJson(e)).toList():[],
-        // reviews: json['reviews'],
+        earnedBadges: json['earned_Badges'] != null
+            ? json['earned_Badges'].map((e) => Place_Badge.fromJson(e)).toList()
+            : [],
         medias: json['medias']);
     return temp;
   }
@@ -135,7 +141,7 @@ class User {
   var Username;
   var Email;
   var User_ID;
-  List<dynamic> favorite_Places;
+  List<UserFavoritePlaces> favorite_Places;
   var places;
   List<dynamic> reviews;
 
@@ -148,15 +154,15 @@ class User {
       required this.reviews});
 
   factory User.fromJson(Map<String, dynamic> json) {
+    List<UserFavoritePlaces> temp = [];
+    for (var item in json['favorite_Places']) {
+      temp.add(UserFavoritePlaces.fromJson(item));
+    }
     return User(
         Username: json['username'],
         Email: json['email'],
         User_ID: json['user_ID'],
-        favorite_Places: json['favorite_Places'] != null
-            ? json['favorite_Places']
-                .map((e) => UserFavoritePlaces.fromJson(e))
-                .toList()
-            : [],
+        favorite_Places: json['favorite_Places'] != null ? temp : [],
         places: json['places'] == null ? null : json['places'],
         reviews: json['reviews'] != null
             ? json['reviews'].map((e) => Review.fromJson(e)).toList()
@@ -171,7 +177,6 @@ class Review {
   var Created_At;
   var Updated_At;
   var Reviewed_Place;
-  dynamic user;
 
   Review(
       {this.Review_ID,
@@ -179,8 +184,7 @@ class Review {
       this.Rating,
       this.Created_At,
       this.Updated_At,
-      this.Reviewed_Place,
-      required this.user});
+      this.Reviewed_Place});
 
   factory Review.fromJson(Map<String, dynamic> json) {
     Review temp = Review(
@@ -189,8 +193,7 @@ class Review {
         Rating: json['rating'],
         Created_At: json['created_at'].toString(),
         Updated_At: json['updated_at'].toString(),
-        Reviewed_Place: json['reviewed_Place'],
-        user: json['user'] == null ? null : User.fromJson(json['user']));
+        Reviewed_Place: json['reviewed_Place']);
     return temp;
   }
 }
