@@ -1,7 +1,7 @@
 import 'dart:math';
 import 'package:TishApp/TishApp/model/TishAppModel.dart';
 import 'package:TishApp/TishApp/screen/PlaceDescription.dart';
-import 'package:TishApp/TishApp/viewmodel/PlaceViewModel.dart';
+import 'package:TishApp/TishApp/viewmodel/PlaceProvider.dart';
 import 'package:flutter/material.dart';
 
 Widget ProfilePicture(
@@ -180,7 +180,7 @@ Widget HorizontalRowPlace(BuildContext context, List<UserFavoritePlaces> list) {
                             borderRadius: BorderRadius.circular(30),
                             child: bucketName != 'null'
                                 ? FutureBuilder(
-                                    future: PlaceViewModel().fetchPlaceImage(
+                                    future: PlaceProvider().fetchPlaceImage(
                                         bucketName, objectName),
                                     builder: (context,
                                         AsyncSnapshot<String> snapshot) {

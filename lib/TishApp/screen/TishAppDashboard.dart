@@ -5,7 +5,7 @@ import 'package:TishApp/TishApp/screen/PlaceDescription2.dart';
 import 'package:TishApp/TishApp/utils/TishAppColors.dart';
 import 'package:TishApp/TishApp/utils/TishAppImages.dart';
 import 'package:TishApp/TishApp/utils/TishAppString.dart';
-import 'package:TishApp/TishApp/viewmodel/PlaceViewModel.dart';
+import 'package:TishApp/TishApp/viewmodel/PlaceProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -20,12 +20,12 @@ class TishAppDashboard extends StatefulWidget {
 }
 
 class _TishAppDashboardState extends State<TishAppDashboard> {
-
   @override
   void initState() {
     // TODO: implement initState
-    Provider.of<PlaceViewModel>(context, listen: false).fetchAll();
+    Provider.of<PlaceProvider>(context, listen: false).fetchAll();
   }
+
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
@@ -33,8 +33,7 @@ class _TishAppDashboardState extends State<TishAppDashboard> {
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
-          child: Column(
-            children: [
+          child: Column(children: [
             Stack(children: [
               Container(
                 width: width,
@@ -54,8 +53,16 @@ class _TishAppDashboardState extends State<TishAppDashboard> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text('start your', style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),),
-                    Text('Adveture Now!', style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),),
+                    Text(
+                      'start your',
+                      style:
+                          TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+                    ),
+                    Text(
+                      'Adveture Now!',
+                      style:
+                          TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+                    ),
                   ],
                 ),
               )
@@ -98,8 +105,16 @@ class _TishAppDashboardState extends State<TishAppDashboard> {
                 child: ListView(
                   scrollDirection: Axis.horizontal,
                   children: [
-                    CategoryCardWidget(title: "Food", icon: Icons.fastfood, category: "Restaurant",),
-                    CategoryCardWidget(title: "Hotels", icon: Icons.bed, category: "Hotels",),
+                    CategoryCardWidget(
+                      title: "Food",
+                      icon: Icons.fastfood,
+                      category: "Restaurant",
+                    ),
+                    CategoryCardWidget(
+                      title: "Hotels",
+                      icon: Icons.bed,
+                      category: "Hotels",
+                    ),
                     CategoryCardWidget(
                         title: "Events", icon: Icons.calendar_month),
                   ],
@@ -125,7 +140,11 @@ class CategoryCardWidget extends StatelessWidget {
   String title;
   IconData icon;
   String category;
-  CategoryCardWidget({Key? key, required this.title, required this.icon, this.category = 'all'})
+  CategoryCardWidget(
+      {Key? key,
+      required this.title,
+      required this.icon,
+      this.category = 'all'})
       : super(key: key);
 
   @override
@@ -134,7 +153,10 @@ class CategoryCardWidget extends StatelessWidget {
       padding: const EdgeInsets.only(right: 15.0),
       child: GestureDetector(
         onTap: () {
-          Navigator.of(context).push(MaterialPageRoute(builder: (context)=>SeeAllPage(category: category,)));
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => SeeAllPage(
+                    category: category,
+                  )));
         },
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -181,7 +203,11 @@ class CategoryCardWidget extends StatelessWidget {
 class PlacesCarousel extends StatefulWidget {
   String title, category;
   bool Popular;
-  PlacesCarousel({Key? key, required this.title, required this.category, this.Popular = false})
+  PlacesCarousel(
+      {Key? key,
+      required this.title,
+      required this.category,
+      this.Popular = false})
       : super(key: key);
 
   @override
@@ -205,10 +231,9 @@ class _PlacesCarouselState extends State<PlacesCarousel> {
     email = prefs!.getString('email').toString();
   }
 
-
   @override
   Widget build(BuildContext context) {
-    return Consumer<PlaceViewModel>(
+    return Consumer<PlaceProvider>(
       builder: (context, value, child) => Padding(
         padding: const EdgeInsets.symmetric(horizontal: 14.0),
         child: Column(
@@ -222,7 +247,10 @@ class _PlacesCarouselState extends State<PlacesCarousel> {
                 ),
                 GestureDetector(
                     onTap: () {
-                      Navigator.of(context).push(MaterialPageRoute(builder: (context)=>SeeAllPage(category: widget.category,)));
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => SeeAllPage(
+                                category: widget.category,
+                              )));
                     },
                     child: Text(
                       "see all >",
@@ -241,175 +269,197 @@ class _PlacesCarouselState extends State<PlacesCarousel> {
                 child: ListView.builder(
                     itemCount: widget.category != 'all'
                         ? value.placeList
-                            .where((element) =>
-                                element.place_type.Type.toString().toLowerCase() == widget.category.toLowerCase())
-                            .length>5?5:value.placeList
-                            .where((element) =>
-                                element.place_type.Type.toString().toLowerCase() == widget.category.toLowerCase())
-                            .length
-                        : value.placeList.length>5?5:value.placeList.length,
+                                    .where((element) =>
+                                        element.place_type.Type
+                                            .toString()
+                                            .toLowerCase() ==
+                                        widget.category.toLowerCase())
+                                    .length >
+                                5
+                            ? 5
+                            : value.placeList
+                                .where((element) =>
+                                    element.place_type.Type
+                                        .toString()
+                                        .toLowerCase() ==
+                                    widget.category.toLowerCase())
+                                .length
+                        : value.placeList.length > 5
+                            ? 5
+                            : value.placeList.length,
                     scrollDirection: Axis.horizontal,
                     physics: BouncingScrollPhysics(),
-                    itemBuilder: (context, index)  {
+                    itemBuilder: (context, index) {
                       Place place;
-                      if(!widget.Popular){
+                      if (!widget.Popular) {
                         place = widget.category != 'all'
-                          ? value.placeList
-                              .where((element) =>
-                                  element.place_type.Type.toString().toLowerCase() == widget.category.toString().toLowerCase())
-                              .elementAt(index)
-                          : value.placeList.elementAt(index);
+                            ? value.placeList
+                                .where((element) =>
+                                    element.place_type.Type
+                                        .toString()
+                                        .toLowerCase() ==
+                                    widget.category.toString().toLowerCase())
+                                .elementAt(index)
+                            : value.placeList.elementAt(index);
                       } else {
-                        if(firstTimeSorting){
+                        if (firstTimeSorting) {
                           tempSort = value.placeList;
-                          tempSort.sort((a, b) => b.averageReviews.compareTo(a.averageReviews));
+                          tempSort.sort((a, b) =>
+                              b.averageReviews.compareTo(a.averageReviews));
                           firstTimeSorting = false;
                         }
                         place = tempSort.elementAt(index);
-                      }  
+                      }
                       return FutureBuilder(
-                        future: User_Favorite_PlacesRepository()
-        .ifalreadyLiked(email, int.parse(place.Place_ID.toString())),
-                        builder: (context, AsyncSnapshot<bool> snapshot) {
-                          if(snapshot.hasData){
-                            bool liked = snapshot.data.toString() == 'true';
-                          return Padding(
-                            padding: const EdgeInsets.only(right: 20),
-                            child: GestureDetector(
-                              onTap: () {
-                                if (place.place_type.Type
-                                        .toString()
-                                        .toLowerCase() !=
-                                    'restaurant') {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              PlaceDescription2(place: place)));
-                                } else {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: ((context) =>
-                                              TishAppDescription(place: place))));
-                                }
-                              },
-                              child: SizedBox(
-                                width: 175,
-                                child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Stack(children: [
-                                        SizedBox(
-                                            height: 130,
-                                            child: ClipRRect(
-                                                borderRadius:
-                                                    BorderRadius.circular(30),
-                                                child: Image.asset(
-                                                  TishApp_PlaceHolderImage2,
-                                                  fit: BoxFit.fill,
-                                                ))),
-                                        SizedBox(
-                                          height: 130,
-                                          child: Align(
-                                            alignment: Alignment.bottomRight,
-                                            child: Container(
-                                              height: 25,
-                                              width: 25,
-                                              decoration: BoxDecoration(
-                                                shape: BoxShape.circle,
-                                                color: liked
-                                                    ? Colors.red
-                                                    : Colors.grey,
+                          future: User_Favorite_PlacesRepository()
+                              .ifalreadyLiked(
+                                  email, int.parse(place.Place_ID.toString())),
+                          builder: (context, AsyncSnapshot<bool> snapshot) {
+                            if (snapshot.hasData) {
+                              bool liked = snapshot.data.toString() == 'true';
+                              return Padding(
+                                padding: const EdgeInsets.only(right: 20),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    if (place.place_type.Type
+                                            .toString()
+                                            .toLowerCase() !=
+                                        'restaurant') {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  PlaceDescription2(
+                                                      place: place)));
+                                    } else {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: ((context) =>
+                                                  TishAppDescription(
+                                                      place: place))));
+                                    }
+                                  },
+                                  child: SizedBox(
+                                    width: 175,
+                                    child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Stack(children: [
+                                            SizedBox(
+                                                height: 130,
+                                                child: ClipRRect(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            30),
+                                                    child: Image.asset(
+                                                      TishApp_PlaceHolderImage2,
+                                                      fit: BoxFit.fill,
+                                                    ))),
+                                            SizedBox(
+                                              height: 130,
+                                              child: Align(
+                                                alignment:
+                                                    Alignment.bottomRight,
+                                                child: Container(
+                                                  height: 25,
+                                                  width: 25,
+                                                  decoration: BoxDecoration(
+                                                    shape: BoxShape.circle,
+                                                    color: liked
+                                                        ? Colors.red
+                                                        : Colors.grey,
+                                                  ),
+                                                  child: IconButton(
+                                                      onPressed: () async {
+                                                        if (!liked) {
+                                                          await User_Favorite_PlacesRepository()
+                                                              .LikePlace(
+                                                                  email,
+                                                                  int.parse(place
+                                                                          .Place_ID
+                                                                      .toString()));
+                                                          liked = true;
+                                                        } else {
+                                                          await User_Favorite_PlacesRepository()
+                                                              .DislikePlace(
+                                                                  email,
+                                                                  int.parse(place
+                                                                          .Place_ID
+                                                                      .toString()));
+                                                          liked = false;
+                                                        }
+                                                        setState(() {});
+                                                      },
+                                                      icon: Icon(
+                                                        Icons.favorite,
+                                                        color: Colors.white,
+                                                        size: 10,
+                                                      )),
+                                                ),
                                               ),
-                                              child: IconButton(
-                                                  onPressed: () async {
-                                                    if (!liked) {
-                                                      await User_Favorite_PlacesRepository()
-                                                          .LikePlace(
-                                                              email,
-                                                              int.parse(
-                                                                  place.Place_ID
-                                                                      .toString()));
-                                                      liked = true;
-                                                    } else {
-                                                      await User_Favorite_PlacesRepository()
-                                                          .DislikePlace(
-                                                              email,
-                                                              int.parse(
-                                                                  place.Place_ID
-                                                                      .toString()));
-                                                      liked = false;
-                                                    }
-                                                    setState(() {});
-                                                  },
-                                                  icon: Icon(
-                                                    Icons.favorite,
-                                                    color: Colors.white,
-                                                    size: 10,
-                                                  )),
-                                            ),
-                                          ),
-                                        )
-                                      ]),
-                                      SizedBox(
-                                        height: 5,
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 14.0),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          children: [
-                                            Icon(
-                                              Icons.pin_drop,
-                                              color: mainColorTheme,
-                                              size: 12,
-                                            ),
-                                            Text(
-                                              place.Location.toString(),
-                                              style: TextStyle(
-                                                  fontSize: 10,
-                                                  color: Colors.grey,
-                                                  fontWeight: FontWeight.bold),
                                             )
-                                          ],
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 14.0),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          children: [
-                                            Opacity(
-                                                opacity: 0,
-                                                child: Icon(
+                                          ]),
+                                          SizedBox(
+                                            height: 5,
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 14.0),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                              children: [
+                                                Icon(
                                                   Icons.pin_drop,
                                                   color: mainColorTheme,
                                                   size: 12,
-                                                )),
-                                            Text(
-                                              place.Name,
-                                              style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 13),
+                                                ),
+                                                Text(
+                                                  place.Location.toString(),
+                                                  style: TextStyle(
+                                                      fontSize: 10,
+                                                      color: Colors.grey,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                )
+                                              ],
                                             ),
-                                          ],
-                                        ),
-                                      )
-                                    ]),
-                              ),
-                            ),
-                          );
-                          } else {
-                            return Container();
-                          }
-                        }
-                      );
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 14.0),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                              children: [
+                                                Opacity(
+                                                    opacity: 0,
+                                                    child: Icon(
+                                                      Icons.pin_drop,
+                                                      color: mainColorTheme,
+                                                      size: 12,
+                                                    )),
+                                                Text(
+                                                  place.Name,
+                                                  style: TextStyle(
+                                                      color: Colors.black,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontSize: 13),
+                                                ),
+                                              ],
+                                            ),
+                                          )
+                                        ]),
+                                  ),
+                                ),
+                              );
+                            } else {
+                              return Container();
+                            }
+                          });
                     })),
             SizedBox(
               height: 40,

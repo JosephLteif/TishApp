@@ -2,7 +2,7 @@ import 'package:TishApp/TishApp/Services/Place/ReviewRepository.dart';
 import 'package:TishApp/TishApp/utils/TishAppImages.dart';
 import 'package:TishApp/TishApp/utils/TishAppString.dart';
 import 'package:TishApp/TishApp/utils/TishAppWidget.dart';
-import 'package:TishApp/TishApp/viewmodel/PlaceViewModel.dart';
+import 'package:TishApp/TishApp/viewmodel/PlaceProvider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -48,12 +48,13 @@ class TishAppDescriptionState extends State<TishAppDescription> {
   @override
   Widget build(BuildContext context) {
     TextEditingController _reviewController = TextEditingController();
-    return Consumer<PlaceViewModel>(
+    return Consumer<PlaceProvider>(
       builder: (context, value, child) => SafeArea(
         child: Scaffold(
           backgroundColor: TishApp_app_background,
           body: NestedScrollView(
-            headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+            headerSliverBuilder:
+                (BuildContext context, bool innerBoxIsScrolled) {
               return <Widget>[
                 SliverAppBar(
                   expandedHeight: 190,
@@ -171,27 +172,31 @@ class TishAppDescriptionState extends State<TishAppDescription> {
                                 physics: NeverScrollableScrollPhysics(),
                                 itemCount: widget.place.reviews.length,
                                 itemBuilder: (context, index) {
-                                  Review review = widget.place.reviews.elementAt(index);
+                                  Review review =
+                                      widget.place.reviews.elementAt(index);
                                   return Padding(
-                                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 8.0),
                                     child: ListTile(
-                                leading: CircleAvatar(),
-                                subtitle: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
+                                      leading: CircleAvatar(),
+                                      subtitle: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
-                                          totalRatting(review.Rating),
-                                          Text(" - ${review.Updated_At.toString().split("T")[0]}")
+                                          Row(
+                                            children: [
+                                              totalRatting(review.Rating),
+                                              Text(
+                                                  " - ${review.Updated_At.toString().split("T")[0]}")
+                                            ],
+                                          ),
+                                          SizedBox(
+                                            height: 5,
+                                          ),
+                                          Text(review.Message.toString()),
                                         ],
                                       ),
-                                      SizedBox(
-                                        height: 5,
-                                      ),
-                                      Text(review.Message.toString()),
-                                    ],
-                                ),
-                              ),
+                                    ),
                                   );
                                 })
                             : Center(child: Text("No Reviews Available")),
@@ -211,9 +216,7 @@ class TishAppDescriptionState extends State<TishAppDescription> {
                       ),
                       onRatingUpdate: (result) {
                         rating = result;
-                        setState(() {
-                          
-                        });
+                        setState(() {});
                       },
                     ),
                     SizedBox(height: 10),
@@ -226,7 +229,8 @@ class TishAppDescriptionState extends State<TishAppDescription> {
                             decoration: InputDecoration(
                                 hintText: "Write a review",
                                 border: OutlineInputBorder(
-                                    borderSide: BorderSide(color: mainColorTheme),
+                                    borderSide:
+                                        BorderSide(color: mainColorTheme),
                                     borderRadius: BorderRadius.circular(10))),
                           ),
                         ),
@@ -257,7 +261,7 @@ class TishAppDescriptionState extends State<TishAppDescription> {
                                       textColor: Colors.white,
                                       fontSize: 16.0);
                                 }
-    
+
                                 setState(() {});
                               },
                               icon: Icon(Icons.send)),

@@ -40,10 +40,11 @@ class _SetLocationPageState extends State<SetLocationPage> {
         Container(
           height: height,
           width: width,
-          child: Image.asset(TishApp_BackgroundLocationImage, fit: BoxFit.fill,),
-          decoration: BoxDecoration(
-              color: Colors.grey.shade100
-                  ),
+          child: Image.asset(
+            TishApp_BackgroundLocationImage,
+            fit: BoxFit.fill,
+          ),
+          decoration: BoxDecoration(color: Colors.grey.shade100),
         ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 32.0),
@@ -70,8 +71,8 @@ class _SetLocationPageState extends State<SetLocationPage> {
               TextField(
                 controller: _LocationController,
                 decoration: InputDecoration(
-                  filled: true,
-                  fillColor: Colors.white,
+                    filled: true,
+                    fillColor: Colors.white,
                     hintText: lbl_location,
                     hintStyle: TextStyle(color: Colors.grey),
                     border: OutlineInputBorder(

@@ -79,33 +79,32 @@ class _ProfilePageState extends State<ProfilePage> {
                         backgroundColor: mainColorTheme,
                       ),
                       SizedBox(
-                    height: 10,
-                  ),
-                  Column(
-                    children: [
-                      Text(
-                        name,
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                        height: 10,
                       ),
-                      Text(location),
+                      Column(
+                        children: [
+                          Text(
+                            name,
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          Text(location),
+                        ],
+                      ),
                     ],
                   ),
-                    ],
-                  ),
-                  
                 ],
               ),
               // Spacer(),
               Flexible(
                 child: FutureBuilder<User>(
                   future: UserRepository().fetchUserByEmail(),
-                  builder: (context, snapshot){
-                    if(snapshot.connectionState == ConnectionState.done){
-                      if(snapshot.hasData){
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.done) {
+                      if (snapshot.hasData) {
                         user = snapshot.data!;
                         return ListView.builder(
                           itemCount: user.reviews.length,
-                          itemBuilder: (context, index){
+                          itemBuilder: (context, index) {
                             return ListTile(
                               leading: CircleAvatar(),
                               title: Text(user.Username),
@@ -115,13 +114,17 @@ class _ProfilePageState extends State<ProfilePage> {
                                   Row(
                                     children: [
                                       totalRatting(user.reviews[index].Rating),
-                                      Text(" - ${user.reviews.elementAt(index).Updated_At.toString().split("T")[0]}")
+                                      Text(
+                                          " - ${user.reviews.elementAt(index).Updated_At.toString().split("T")[0]}")
                                     ],
                                   ),
                                   SizedBox(
                                     height: 5,
                                   ),
-                                  Text(user.reviews.elementAt(index).Message.toString()),
+                                  Text(user.reviews
+                                      .elementAt(index)
+                                      .Message
+                                      .toString()),
                                 ],
                               ),
                             );
@@ -136,7 +139,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       );
                     }
                   },
-                  ),
+                ),
               ),
               // Expanded(
               //   child: GridView.builder(

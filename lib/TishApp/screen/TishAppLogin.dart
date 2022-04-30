@@ -9,7 +9,7 @@ import 'package:flutter_signin_button/flutter_signin_button.dart';
 // import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:nb_utils/nb_utils.dart';
-import 'package:TishApp/TishApp/viewmodel/authViewModel.dart';
+import 'package:TishApp/TishApp/viewmodel/authProvider.dart';
 import 'package:provider/provider.dart';
 
 import 'TishAppSignUp.dart';
@@ -111,9 +111,9 @@ class _LoginPageState extends State<LoginPage> {
                 SubmitBtn(
                   onPressed: () async {
                     FocusScope.of(context).unfocus();
-                    await Provider.of<AuthViewModel>(context, listen: false)
+                    await Provider.of<AuthProvider>(context, listen: false)
                         .Login(nameController.text, passwordController.text);
-                    if (Provider.of<AuthViewModel>(context, listen: false)
+                    if (Provider.of<AuthProvider>(context, listen: false)
                         .login_response) {
                       nameController.text = '';
                       passwordController.text = '';

@@ -3,7 +3,7 @@ import 'package:TishApp/TishApp/Components/SubmitBtn.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:nb_utils/nb_utils.dart';
-import 'package:TishApp/TishApp/viewmodel/authViewModel.dart';
+import 'package:TishApp/TishApp/viewmodel/authProvider.dart';
 import 'package:provider/provider.dart';
 
 import 'TishAppLogin.dart';
@@ -111,13 +111,13 @@ class _SignUpPageState extends State<SignUpPage> {
                           fontWeight: FontWeight.normal, fontSize: 30)),
                   SubmitBtn(
                     onPressed: () async {
-                      await Provider.of<AuthViewModel>(context, listen: false)
+                      await Provider.of<AuthProvider>(context, listen: false)
                           .Register(
                               firstNameController.text,
                               lastNameController.text,
                               passwordController.text,
                               emailController.text);
-                      if (Provider.of<AuthViewModel>(context, listen: false)
+                      if (Provider.of<AuthProvider>(context, listen: false)
                           .register_response) {
                         firstNameController.text = '';
                         lastNameController.text = '';

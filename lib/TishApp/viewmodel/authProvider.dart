@@ -3,7 +3,7 @@ import 'package:TishApp/TishApp/Services/Logout/LogoutRepository.dart';
 import 'package:TishApp/TishApp/Services/Register/RegisterRepository.dart';
 import 'package:flutter/cupertino.dart';
 
-class AuthViewModel with ChangeNotifier {
+class AuthProvider with ChangeNotifier {
   // ApiResponse _apiResponse = ApiResponse.loading('Fetching artist data');
 
   bool _login_response = false;

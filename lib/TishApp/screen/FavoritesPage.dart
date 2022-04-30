@@ -3,7 +3,7 @@ import 'package:TishApp/TishApp/Services/User/UserRepository.dart';
 import 'package:TishApp/TishApp/model/TishAppModel.dart';
 import 'package:TishApp/TishApp/utils/TishAppColors.dart';
 import 'package:TishApp/TishApp/utils/TishAppImages.dart';
-import 'package:TishApp/TishApp/viewmodel/PlaceViewModel.dart';
+import 'package:TishApp/TishApp/viewmodel/PlaceProvider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
@@ -75,7 +75,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
                                       bucketName != 'null' &&
                                               objectName != 'null'
                                           ? FutureBuilder(
-                                              future: PlaceViewModel()
+                                              future: PlaceProvider()
                                                   .fetchPlaceImage(
                                                       bucketName, objectName),
                                               builder: (context,
