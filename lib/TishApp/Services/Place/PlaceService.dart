@@ -15,7 +15,6 @@ class PlaceService {
     Dio dio = await DioSettings.getDio();
     try {
       final response = await dio.get((_baseUrl + '/Places'));
-      print(response.statusCode);
       responseJson = returnResponse(response);
     } catch (e) {
       print(e.toString());

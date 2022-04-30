@@ -10,6 +10,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'SeeAllPlaces.dart';
+
 class TishAppDashboard extends StatefulWidget {
   const TishAppDashboard();
 
@@ -18,6 +20,12 @@ class TishAppDashboard extends StatefulWidget {
 }
 
 class _TishAppDashboardState extends State<TishAppDashboard> {
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    Provider.of<PlaceViewModel>(context, listen: false).fetchAll();
+  }
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
@@ -76,11 +84,12 @@ class _TishAppDashboardState extends State<TishAppDashboard> {
             ),
             PlacesCarousel(
               title: "Trips Nearby",
-              category: "all",
+              category: "Home",
             ),
             PlacesCarousel(
               title: "Popular Destinations",
               category: "all",
+              Popular: true,
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 14.0),
@@ -89,8 +98,8 @@ class _TishAppDashboardState extends State<TishAppDashboard> {
                 child: ListView(
                   scrollDirection: Axis.horizontal,
                   children: [
-                    CategoryCardWidget(title: "Food", icon: Icons.fastfood),
-                    CategoryCardWidget(title: "Hotels", icon: Icons.bed),
+                    CategoryCardWidget(title: "Food", icon: Icons.fastfood, category: "Restaurant",),
+                    CategoryCardWidget(title: "Hotels", icon: Icons.bed, category: "Hotels",),
                     CategoryCardWidget(
                         title: "Events", icon: Icons.calendar_month),
                   ],
@@ -99,11 +108,11 @@ class _TishAppDashboardState extends State<TishAppDashboard> {
             ),
             PlacesCarousel(
               title: "Most Restaurants",
-              category: "all",
+              category: "Restaurant",
             ),
             PlacesCarousel(
               title: "Hiking",
-              category: "all",
+              category: "Hiking",
             ),
           ]),
         ),
@@ -115,7 +124,8 @@ class _TishAppDashboardState extends State<TishAppDashboard> {
 class CategoryCardWidget extends StatelessWidget {
   String title;
   IconData icon;
-  CategoryCardWidget({Key? key, required this.title, required this.icon})
+  String category;
+  CategoryCardWidget({Key? key, required this.title, required this.icon, this.category = 'all'})
       : super(key: key);
 
   @override
@@ -123,7 +133,9 @@ class CategoryCardWidget extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(right: 15.0),
       child: GestureDetector(
-        onTap: () {},
+        onTap: () {
+          Navigator.of(context).push(MaterialPageRoute(builder: (context)=>SeeAllPage(category: category,)));
+        },
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -168,7 +180,8 @@ class CategoryCardWidget extends StatelessWidget {
 
 class PlacesCarousel extends StatefulWidget {
   String title, category;
-  PlacesCarousel({Key? key, required this.title, required this.category})
+  bool Popular;
+  PlacesCarousel({Key? key, required this.title, required this.category, this.Popular = false})
       : super(key: key);
 
   @override
@@ -178,6 +191,8 @@ class PlacesCarousel extends StatefulWidget {
 class _PlacesCarouselState extends State<PlacesCarousel> {
   String email = '';
   SharedPreferences? prefs;
+  List<Place> tempSort = [];
+  bool firstTimeSorting = true;
 
   @override
   void initState() {
@@ -206,7 +221,9 @@ class _PlacesCarouselState extends State<PlacesCarousel> {
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
                 GestureDetector(
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.of(context).push(MaterialPageRoute(builder: (context)=>SeeAllPage(category: widget.category,)));
+                    },
                     child: Text(
                       "see all >",
                       style: TextStyle(
@@ -225,18 +242,31 @@ class _PlacesCarouselState extends State<PlacesCarousel> {
                     itemCount: widget.category != 'all'
                         ? value.placeList
                             .where((element) =>
-                                element.place_type.Type == widget.category)
+                                element.place_type.Type.toString().toLowerCase() == widget.category.toLowerCase())
+                            .length>5?5:value.placeList
+                            .where((element) =>
+                                element.place_type.Type.toString().toLowerCase() == widget.category.toLowerCase())
                             .length
-                        : value.placeList.length,
+                        : value.placeList.length>5?5:value.placeList.length,
                     scrollDirection: Axis.horizontal,
                     physics: BouncingScrollPhysics(),
-                    itemBuilder: (context, index)  {           
-                      Place place = widget.category != 'all'
+                    itemBuilder: (context, index)  {
+                      Place place;
+                      if(!widget.Popular){
+                        place = widget.category != 'all'
                           ? value.placeList
                               .where((element) =>
-                                  element.place_type.Type == widget.category)
+                                  element.place_type.Type.toString().toLowerCase() == widget.category.toString().toLowerCase())
                               .elementAt(index)
                           : value.placeList.elementAt(index);
+                      } else {
+                        if(firstTimeSorting){
+                          tempSort = value.placeList;
+                          tempSort.sort((a, b) => b.averageReviews.compareTo(a.averageReviews));
+                          firstTimeSorting = false;
+                        }
+                        place = tempSort.elementAt(index);
+                      }  
                       return FutureBuilder(
                         future: User_Favorite_PlacesRepository()
         .ifalreadyLiked(email, int.parse(place.Place_ID.toString())),
@@ -250,7 +280,7 @@ class _PlacesCarouselState extends State<PlacesCarousel> {
                                 if (place.place_type.Type
                                         .toString()
                                         .toLowerCase() !=
-                                    'home') {
+                                    'restaurant') {
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(

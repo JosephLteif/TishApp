@@ -1,3 +1,4 @@
+import 'package:TishApp/TishApp/Services/Place/ReviewRepository.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:TishApp/TishApp/Services/Place/PlaceRepository.dart';
 import 'package:TishApp/TishApp/model/TishAppModel.dart';
@@ -31,7 +32,6 @@ class PlaceViewModel with ChangeNotifier {
   Future<void> fetchOne(int id) async {
     try {
       Place response = await PlaceRepository().fetchOnePlace(id);
-      print("response =>>>> $response");
       setSelectedPlace(response);
     } catch (e) {
       print(e);
@@ -44,7 +44,6 @@ class PlaceViewModel with ChangeNotifier {
     try {
       response =
           await PlaceRepository().fetchOnePlaceImage(bucketName, imageName);
-      print("response =>>>> $response");
     } catch (e) {
       print(e);
     }
@@ -62,5 +61,32 @@ class PlaceViewModel with ChangeNotifier {
 
   List<Place> get placeList {
     return _placeList;
+  }
+
+  Future<bool> addReview(String userEmail, int placeID, int rating, String message) async {
+    bool response = await ReviewRepository().AddReviewToPlace(
+                                    userEmail,
+                                    placeID,
+                                    rating,
+                                    message);
+    if (response) {
+      Place p = placeList.firstWhere((element) => element.Place_ID == placeID);
+      p.reviews.add(
+          Review(
+              Rating: rating,
+              Message: message,
+              Updated_At: DateTime.now(),
+              Created_At: DateTime.now()));
+              double temp = 0.0;
+              for (var item in p.reviews) {
+      temp += double.parse(item.Rating.toString());
+    }
+    if (temp != 0) temp /= p.reviews.length;
+
+    p.averageReviews = temp;
+
+    }
+    notifyListeners();
+    return response;
   }
 }

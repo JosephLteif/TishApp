@@ -88,8 +88,6 @@ class User_Favorite_PlacesService {
     try {
       final response = await dio
           .get((_baseUrl + '/User_Favorite_Places/Exists/$email/$PlaceID'));
-      print(response.statusCode);
-      print(response.data);
       if (response.statusCode == 200) {
         return response.data.toString() == "true" ? true : false;
       }

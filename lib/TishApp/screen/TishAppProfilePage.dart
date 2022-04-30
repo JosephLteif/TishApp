@@ -70,14 +70,16 @@ class _ProfilePageState extends State<ProfilePage> {
           child: Column(
             children: [
               Row(
-                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  CircleAvatar(
-                    radius: 30,
-                    backgroundColor: mainColorTheme,
-                  ),
-                  SizedBox(
-                    width: 10,
+                  Column(
+                    children: [
+                      CircleAvatar(
+                        radius: 30,
+                        backgroundColor: mainColorTheme,
+                      ),
+                      SizedBox(
+                    height: 10,
                   ),
                   Column(
                     children: [
@@ -88,61 +90,94 @@ class _ProfilePageState extends State<ProfilePage> {
                       Text(location),
                     ],
                   ),
-                  Spacer(),
-                  Container(
-                    decoration: BoxDecoration(
-                        shape: BoxShape.circle, color: mainColorTheme),
-                    child: IconButton(
-                      icon: Icon(Icons.edit),
-                      color: Colors.white,
-                      onPressed: () {},
-                    ),
+                    ],
                   ),
+                  
                 ],
               ),
-              SizedBox(
-                height: 20,
-              ),
-              Expanded(
-                child: GridView.builder(
-                    itemCount: 5,
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      crossAxisSpacing: 20,
-                      mainAxisSpacing: 20,
-                      childAspectRatio: 1.3,
-                    ),
-                    itemBuilder: (context, index) {
-                      return Container(
-                        padding: EdgeInsets.all(20),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(color: Colors.black, width: 1),
-                          color: Colors.white,
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Icon(
-                              icons[index],
-                              color: mainColorTheme,
-                            ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            Text(categories[index],
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                )),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            Text(text[index]),
-                          ],
-                        ),
+              // Spacer(),
+              Flexible(
+                child: FutureBuilder<User>(
+                  future: UserRepository().fetchUserByEmail(),
+                  builder: (context, snapshot){
+                    if(snapshot.connectionState == ConnectionState.done){
+                      if(snapshot.hasData){
+                        user = snapshot.data!;
+                        return ListView.builder(
+                          itemCount: user.reviews.length,
+                          itemBuilder: (context, index){
+                            return ListTile(
+                              leading: CircleAvatar(),
+                              title: Text(user.Username),
+                              subtitle: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    children: [
+                                      totalRatting(user.reviews[index].Rating),
+                                      Text(" - ${user.reviews.elementAt(index).Updated_At.toString().split("T")[0]}")
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    height: 5,
+                                  ),
+                                  Text(user.reviews.elementAt(index).Message.toString()),
+                                ],
+                              ),
+                            );
+                          },
+                        );
+                      } else {
+                        return Container();
+                      }
+                    } else {
+                      return Center(
+                        child: CircularProgressIndicator(),
                       );
-                    }),
+                    }
+                  },
+                  ),
               ),
+              // Expanded(
+              //   child: GridView.builder(
+              //       itemCount: 5,
+              //       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              //         crossAxisCount: 2,
+              //         crossAxisSpacing: 20,
+              //         mainAxisSpacing: 20,
+              //         childAspectRatio: 1.3,
+              //       ),
+              //       itemBuilder: (context, index) {
+              //         return Container(
+              //           padding: EdgeInsets.all(20),
+              //           decoration: BoxDecoration(
+              //             borderRadius: BorderRadius.circular(10),
+              //             border: Border.all(color: Colors.black, width: 1),
+              //             color: Colors.white,
+              //           ),
+              //           child: Column(
+              //             crossAxisAlignment: CrossAxisAlignment.start,
+              //             children: [
+              //               Icon(
+              //                 icons[index],
+              //                 color: mainColorTheme,
+              //               ),
+              //               SizedBox(
+              //                 height: 10,
+              //               ),
+              //               Text(categories[index],
+              //                   style: TextStyle(
+              //                     fontWeight: FontWeight.bold,
+              //                   )),
+              //               SizedBox(
+              //                 height: 10,
+              //               ),
+              //               Text(text[index]),
+              //             ],
+              //           ),
+              //         );
+              //       }),
+              // ),
               IconButton(
                   onPressed: () async {
                     await LogoutRepository().LogoutRepo();

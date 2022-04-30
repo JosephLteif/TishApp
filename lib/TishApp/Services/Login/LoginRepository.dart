@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:TishApp/TishApp/utils/TishAppString.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:jwt_decode/jwt_decode.dart';
 
@@ -28,7 +29,7 @@ class LoginRepository {
         'email_verified', jwtData['email_verified'].toString());
     await prefs.setString('given_name', jwtData['given_name'].toString());
     await prefs.setString('family_name', jwtData['family_name'].toString());
-
+    await prefs.setString(prefs_UserLocation, "Beirut");
     await prefs.setBool('IsLoggedIn', true);
     return true;
   }

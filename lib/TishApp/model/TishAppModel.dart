@@ -8,8 +8,8 @@ class Place {
   var Created_at;
   var Updated_at;
   Place_Type place_type;
-  var averageReviews;
-  List<dynamic> reviews;
+  double averageReviews;
+  List<Review> reviews;
   var medias;
   var user;
   List<dynamic> earnedBadges;
@@ -22,7 +22,7 @@ class Place {
       this.Created_at,
       this.Updated_at,
       required this.place_type,
-      this.averageReviews,
+      this.averageReviews = 0.0,
       required this.earnedBadges,
       this.user,
       required this.reviews,
@@ -143,7 +143,7 @@ class User {
   var User_ID;
   List<UserFavoritePlaces> favorite_Places;
   var places;
-  List<dynamic> reviews;
+  List<Review> reviews;
 
   User(
       {this.Username,
@@ -155,8 +155,12 @@ class User {
 
   factory User.fromJson(Map<String, dynamic> json) {
     List<UserFavoritePlaces> temp = [];
+    List<Review> reviews = [];
     for (var item in json['favorite_Places']) {
       temp.add(UserFavoritePlaces.fromJson(item));
+    }
+    for (var item in json['reviews']) {
+      reviews.add(Review.fromJson(item));
     }
     return User(
         Username: json['username'],
@@ -164,9 +168,7 @@ class User {
         User_ID: json['user_ID'],
         favorite_Places: json['favorite_Places'] != null ? temp : [],
         places: json['places'] == null ? null : json['places'],
-        reviews: json['reviews'] != null
-            ? json['reviews'].map((e) => Review.fromJson(e)).toList()
-            : []);
+        reviews: reviews);
   }
 }
 
