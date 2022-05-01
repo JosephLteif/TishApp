@@ -1,14 +1,12 @@
-import 'dart:convert';
-
 import 'package:TishApp/TishApp/Settings/AppSettings.dart';
 import 'package:TishApp/TishApp/Settings/DioSettings.dart';
+import 'package:TishApp/TishApp/model/TishAppModel.dart';
 import 'package:dio/dio.dart';
-import 'package:http/http.dart';
-import 'package:meta/meta.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class UserService {
-  Settings settings = Settings();
+
+class UserRepository {
+    Settings settings = Settings();
   final String _baseUrl = Settings().backend_url;
 
   Future<dynamic> getAll() async {
@@ -62,21 +60,41 @@ class UserService {
     return responseJson;
   }
 
-  @visibleForTesting
-  dynamic returnResponse(var response) {
+  dynamic returnResponse(Response response) {
     switch (response.statusCode) {
       case 200:
-        dynamic responseJson = (response.data);
-        return responseJson;
+        return response.data;
       case 400:
-        throw Exception(response.body.toString());
+        throw Exception(response.statusMessage.toString());
       case 401:
       case 403:
-        throw Exception(response.body.toString());
+        throw Exception(response.statusMessage.toString());
       case 500:
       default:
         throw Exception('Error occured while communication with server' +
             ' with status code : ${response.statusCode}');
     }
+  }
+
+  Future<List<User>> fetchAllUser() async {
+    List<User> list = [];
+    dynamic response = await getAll();
+    for (var item in response) {
+      User UserFavoritePlace = User.fromJson(item);
+      list.add(UserFavoritePlace);
+    }
+    return list;
+  }
+
+  Future<User> fetchUserByEmail() async {
+    dynamic response = await getByEmail();
+    User user = User.fromJson(response);
+    return user;
+  }
+
+  Future<User> fetchOneUser(int id) async {
+    dynamic response = await getOne(id);
+    User user = User.fromJson(response);
+    return user;
   }
 }

@@ -1,11 +1,7 @@
-import 'package:TishApp/TishApp/Services/Login/LoginRepository.dart';
-import 'package:TishApp/TishApp/Services/Logout/LogoutRepository.dart';
-import 'package:TishApp/TishApp/Services/Register/RegisterRepository.dart';
+import 'package:TishApp/TishApp/Services/AuthService.dart';
 import 'package:flutter/cupertino.dart';
 
 class AuthProvider with ChangeNotifier {
-  // ApiResponse _apiResponse = ApiResponse.loading('Fetching artist data');
-
   bool _login_response = false;
   bool _register_response = false;
 
@@ -13,7 +9,7 @@ class AuthProvider with ChangeNotifier {
   Future<void> Login(String username, String password) async {
     try {
       setLoginResponse(false);
-      bool response = await LoginRepository().LoginRepo(username, password);
+      bool response = await AuthService().LoginRepo(username, password);
       setLoginResponse(response);
     } catch (e) {
       print(e);
@@ -26,8 +22,8 @@ class AuthProvider with ChangeNotifier {
       String firstName, String lastName, String password, String email) async {
     try {
       setRegisterResponse(false);
-      bool response = await RegisterRepository()
-          .RegisterRepo(firstName, lastName, password, email);
+      bool response = await AuthService()
+          .registerService(firstName, lastName, password, email);
       setRegisterResponse(response);
     } catch (e) {
       print(e);

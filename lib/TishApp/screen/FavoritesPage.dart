@@ -1,5 +1,5 @@
 import 'package:TishApp/TishApp/Components/Widgets.dart';
-import 'package:TishApp/TishApp/Services/User/UserRepository.dart';
+import 'package:TishApp/TishApp/Services/UserService.dart';
 import 'package:TishApp/TishApp/model/TishAppModel.dart';
 import 'package:TishApp/TishApp/utils/TishAppColors.dart';
 import 'package:TishApp/TishApp/utils/TishAppImages.dart';

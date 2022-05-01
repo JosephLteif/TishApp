@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:TishApp/TishApp/Services/Logout/LogoutRepository.dart';
+import 'package:TishApp/TishApp/Services/AuthService.dart';
 import 'package:TishApp/TishApp/Settings/AppSettings.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -36,7 +36,7 @@ RefreshToken(String refreshToken) async {
           timeInSecForIosWeb: 1,
           textColor: Colors.black87,
           fontSize: 16.0);
-      await LogoutRepository().LogoutRepo();
+      await AuthService().LogoutRepo();
       return false;
     }
   } on Exception catch (e) {
@@ -47,7 +47,7 @@ RefreshToken(String refreshToken) async {
         timeInSecForIosWeb: 1,
         textColor: Colors.black87,
         fontSize: 16.0);
-    await LogoutRepository().LogoutRepo();
+    await AuthService().LogoutRepo();
     return false;
   }
 }

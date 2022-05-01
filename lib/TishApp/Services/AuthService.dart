@@ -1,15 +1,17 @@
-import 'dart:convert';
 import 'dart:io';
-
+import 'package:TishApp/TishApp/Settings/AppSettings.dart';
+import 'package:TishApp/TishApp/utils/TishAppString.dart';
+import 'package:TishApp/main.dart';
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'package:meta/meta.dart';
-import '../../Settings/AppSettings.dart';
+import 'package:localstorage/localstorage.dart';
+import 'package:nb_utils/nb_utils.dart';
+import 'package:jwt_decode/jwt_decode.dart';
 
-class RegisterService {
-  Settings settings = Settings();
+
+class AuthService {
+    Settings settings = Settings();
+      LocalStorage _localStorage = LocalStorage('UserInfo');
 
   Future<bool> registerService(
       String firstName, String lastName, String password, String email) async {
@@ -75,49 +77,64 @@ class RegisterService {
     return true;
   }
 
-  Future<bool> AddToDB(String firstName, String lastName, String email,
-      String accessToken) async {
+  Future<void> LogoutRepo() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.clear();
+    _localStorage.clear();
+    await prefs.setBool('IsLoggedIn', false);
+    navigator.currentState!.popUntil((route) => route.isFirst);
+  }
+
+  Future<dynamic> loginService(String username, String password) async {
     Dio dio = new Dio();
     (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
         (HttpClient client) {
       client.badCertificateCallback =
           (X509Certificate cert, String host, int port) => true;
     };
+    Response response;
     try {
-      var temp = {
-        "Username": '$firstName $lastName',
-        "Email": email,
-      };
-      var data = (temp);
-      final responseRegister = await dio.post((settings.save_User_In_DB_url),
+      response = await dio.post((settings.login_url),
           options: Options(headers: {
-            'Authorization': 'Bearer $accessToken',
-            "content-type": "application/json",
-            "accept": "application/json",
+            "Content-Type": "application/x-www-form-urlencoded",
           }),
-          data: data);
-      return true;
+          data: {
+            "username": username,
+            "password": password,
+            "grant_type": settings.grant_type_login,
+            "client_id": settings.client_id_login,
+            "client_secret": settings.client_secret_login,
+          });
     } catch (e) {
-      return false;
+      print(e);
+      throw Exception('No Internet Connection');
     }
+    return response.data;
   }
 
-  @visibleForTesting
-  dynamic returnResponse(Response response) {
-    switch (response.statusCode) {
-      case 200:
-      case 201:
-        dynamic responseJson = (response.data);
-        return responseJson;
-      case 400:
-        throw Exception(response.data.toString());
-      case 401:
-      case 403:
-        throw Exception(response.data.toString());
-      case 500:
-      default:
-        throw Exception('Error occured while communication with server' +
-            ' with status code : ${response.statusCode}');
-    }
+  // ignore: non_constant_identifier_names
+  Future<bool> LoginRepo(String username, String password) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var response = await loginService(username, password);
+    final jsonData = (response);
+    Map<String, dynamic>? jwtData = {};
+    print(jsonData['access_token']);
+    jwtData = Jwt.parseJwt(jsonData['access_token'].toString());
+    await prefs.setString("accessToken", jsonData['access_token']);
+    await prefs.setString("refreshToken", jsonData['refresh_token']);
+    await prefs.setString("UserID", jwtData['sub']);
+    await prefs.setInt("tokenDuration", jsonData['expires_in']);
+    await prefs.setInt("refreshDuration", jsonData['refresh_expires_in']);
+    await prefs.setInt("tokenStartTime", jwtData['iat']);
+    await prefs.setString('name', jwtData['name'].toString());
+    await prefs.setString('refresh_token', jwtData['refresh-token'].toString());
+    await prefs.setString('email', jwtData['email'].toString());
+    await prefs.setString(
+        'email_verified', jwtData['email_verified'].toString());
+    await prefs.setString('given_name', jwtData['given_name'].toString());
+    await prefs.setString('family_name', jwtData['family_name'].toString());
+    await prefs.setString(prefs_UserLocation, "Beirut");
+    await prefs.setBool('IsLoggedIn', true);
+    return true;
   }
 }

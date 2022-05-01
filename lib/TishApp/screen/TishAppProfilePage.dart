@@ -1,6 +1,5 @@
-import 'package:TishApp/TishApp/Components/Widgets.dart';
-import 'package:TishApp/TishApp/Services/Logout/LogoutRepository.dart';
-import 'package:TishApp/TishApp/Services/User/UserRepository.dart';
+import 'package:TishApp/TishApp/Services/AuthService.dart';
+import 'package:TishApp/TishApp/Services/UserService.dart';
 import 'package:TishApp/TishApp/model/TishAppModel.dart';
 import 'package:TishApp/TishApp/utils/TishAppColors.dart';
 import 'package:TishApp/TishApp/utils/TishAppString.dart';
@@ -141,49 +140,9 @@ class _ProfilePageState extends State<ProfilePage> {
                   },
                 ),
               ),
-              // Expanded(
-              //   child: GridView.builder(
-              //       itemCount: 5,
-              //       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              //         crossAxisCount: 2,
-              //         crossAxisSpacing: 20,
-              //         mainAxisSpacing: 20,
-              //         childAspectRatio: 1.3,
-              //       ),
-              //       itemBuilder: (context, index) {
-              //         return Container(
-              //           padding: EdgeInsets.all(20),
-              //           decoration: BoxDecoration(
-              //             borderRadius: BorderRadius.circular(10),
-              //             border: Border.all(color: Colors.black, width: 1),
-              //             color: Colors.white,
-              //           ),
-              //           child: Column(
-              //             crossAxisAlignment: CrossAxisAlignment.start,
-              //             children: [
-              //               Icon(
-              //                 icons[index],
-              //                 color: mainColorTheme,
-              //               ),
-              //               SizedBox(
-              //                 height: 10,
-              //               ),
-              //               Text(categories[index],
-              //                   style: TextStyle(
-              //                     fontWeight: FontWeight.bold,
-              //                   )),
-              //               SizedBox(
-              //                 height: 10,
-              //               ),
-              //               Text(text[index]),
-              //             ],
-              //           ),
-              //         );
-              //       }),
-              // ),
               IconButton(
                   onPressed: () async {
-                    await LogoutRepository().LogoutRepo();
+                    await AuthService().LogoutRepo();
                   },
                   icon: Icon(Icons.logout)),
             ],
