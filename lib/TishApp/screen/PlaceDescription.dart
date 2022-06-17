@@ -10,6 +10,7 @@ import 'package:nb_utils/nb_utils.dart';
 import 'package:TishApp/TishApp/model/TishAppModel.dart';
 import 'package:TishApp/TishApp/utils/TishAppColors.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class TishAppDescription extends StatefulWidget {
   Place place;
@@ -43,6 +44,20 @@ class TishAppDescriptionState extends State<TishAppDescription> {
     init();
 
     super.initState();
+  }
+
+  Future<void> openMap(double latitude, double longitude) async {
+    String googleUrl = 'https://www.google.com/maps/search/?api=1&query=$latitude,$longitude';
+    try{
+      try{
+        await launch(googleUrl);
+      } catch (e) {
+        print(e);
+      }
+    }catch (e){
+      print(e);
+    }
+    
   }
 
   @override
@@ -92,19 +107,24 @@ class TishAppDescriptionState extends State<TishAppDescription> {
                             size: 35,
                             color: Colors.black,
                             weight: FontWeight.bold)),
-                    Row(
-                      children: [
-                        Icon(
-                          Icons.pin_drop,
-                          color: mainColorTheme,
-                          size: 15,
-                        ),
-                        Text(widget.place.Location,
-                            style: primaryTextStyle(
-                                size: 10,
-                                color: Colors.grey,
-                                weight: FontWeight.bold)),
-                      ],
+                    GestureDetector(
+                      onTap: () async {
+                        openMap(widget.place.Latitude, widget.place.Longitude);
+                      },
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.pin_drop,
+                            color: mainColorTheme,
+                            size: 15,
+                          ),
+                          Text(widget.place.Location,
+                              style: primaryTextStyle(
+                                  size: 10,
+                                  color: Colors.grey,
+                                  weight: FontWeight.bold)),
+                        ],
+                      ),
                     ),
                     totalRatting(widget.place.averageReviews),
                     SizedBox(height: 50),

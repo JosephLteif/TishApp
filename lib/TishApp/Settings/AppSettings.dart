@@ -1,14 +1,14 @@
 class Settings {
-  static const String _backend_protocol = 'http';
+  static const String _backend_protocol = 'https';
   static const String _backend_domain_name = '10.0.2.2';
-  static const String _backend_port_number = '49154';
-  // static const String _backend_url = _backend_protocol +
-  //     '://' +
-  //     _backend_domain_name +
-  //     ':' +
-  //     _backend_port_number +
-  //     '/api';
-  static const String _backend_url = 'https://tishapi.codepickles.com/api';
+  static const String _backend_port_number = '5001';
+  static const String _backend_url = _backend_protocol +
+      '://' +
+      _backend_domain_name +
+      ':' +
+      _backend_port_number +
+      '/api';
+  // static const String _backend_url = 'https://tishapi.codepickles.com/api';
 
   static const String _Realm_Name = 'TishAppRealm';
   static const String _domain_name = 'dev.mauto.co';

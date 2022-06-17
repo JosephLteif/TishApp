@@ -7,6 +7,8 @@ class Place {
   var Description;
   var Created_at;
   var Updated_at;
+  double Latitude;
+  double Longitude;
   Place_Type place_type;
   double averageReviews;
   List<Review> reviews;
@@ -21,6 +23,8 @@ class Place {
       this.Description,
       this.Created_at,
       this.Updated_at,
+      required this.Latitude,
+      required this.Longitude,
       required this.place_type,
       this.averageReviews = 0.0,
       required this.earnedBadges,
@@ -44,6 +48,8 @@ class Place {
         Place_ID: json['place_ID'],
         Name: json['name'],
         Location: json['location'],
+        Latitude: double.parse(json['latitude']),
+        Longitude: double.parse(json['longitude']),
         Description: json['description'],
         Created_at: json['created_at'],
         Updated_at: json['updated_at'],
