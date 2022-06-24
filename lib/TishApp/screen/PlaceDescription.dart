@@ -10,6 +10,7 @@ import 'package:nb_utils/nb_utils.dart';
 import 'package:TishApp/TishApp/model/TishAppModel.dart';
 import 'package:TishApp/TishApp/utils/TishAppColors.dart';
 import 'package:provider/provider.dart';
+import 'package:share/share.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class TishAppDescription extends StatefulWidget {
@@ -78,6 +79,15 @@ class TishAppDescriptionState extends State<TishAppDescription> {
                   pinned: true,
                   centerTitle: true,
                   titleSpacing: 0,
+                  actions: [
+                    IconButton(
+                      icon: Icon(Icons.share),
+                      onPressed: () {
+                        Share.share(
+                            'https://tishapp.codepickles.com/DeepLink/${widget.place.Place_ID}');
+                      }
+                    )
+                  ],
                   leading: IconButton(
                       icon: Icon(Icons.arrow_back, color: white),
                       onPressed: () {

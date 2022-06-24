@@ -70,5 +70,18 @@
 	<string>Prokit app requires access to the photo library to upload your photo.</string>
 	<key>NSUserTrackingUsageDescription</key>
 	<string>This identifier will be used to deliver personalized ads to you.</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>tishappmobile.com</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>tish</string>
+			</array>
+		</dict>
+	</array>
 </dict>
 </plist>

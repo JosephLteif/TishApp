@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:provider/provider.dart';
+import 'TishApp/screen/DeepPage.dart';
+import 'TishApp/screen/PlaceDescription.dart';
 import 'TishApp/screen/TishAppMainPage.dart';
 import 'TishApp/screen/TishAppLogin.dart';
 import 'TishApp/screen/TishAppSignUp.dart';
@@ -10,6 +12,8 @@ import 'TishApp/viewmodel/authProvider.dart';
 import 'TishApp/viewmodel/PlaceProvider.dart';
 
 final GlobalKey<NavigatorState> navigator = GlobalKey<NavigatorState>();
+
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(TishApp());

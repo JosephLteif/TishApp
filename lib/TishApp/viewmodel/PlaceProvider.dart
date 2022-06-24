@@ -86,6 +86,18 @@ class PlaceProvider with ChangeNotifier {
     notifyListeners();
   }
 
+    Future<Place> PlaceByID(int id) async {
+      var response;
+    try {
+      response = await PlaceRepository().fetchOnePlace(id);
+      return response;
+    } catch (e) {
+      print(e);
+      return response;
+    }
+    
+  }
+
   Future<String> fetchPlaceImage(String bucketName, String imageName) async {
     String response = 'false';
     try {
