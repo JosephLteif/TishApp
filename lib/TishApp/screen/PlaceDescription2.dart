@@ -5,6 +5,7 @@ import 'package:TishApp/TishApp/utils/TishAppImages.dart';
 import 'package:TishApp/TishApp/utils/TishAppWidget.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'package:share_plus/share_plus.dart';
 
 class PlaceDescription2 extends StatefulWidget {
   Place place;
@@ -147,12 +148,25 @@ class _PlaceDescription2State extends State<PlaceDescription2> {
         ),
         Align(
           alignment: Alignment.topLeft,
-          child: IconButton(
-              onPressed: () => Navigator.pop(context),
-              icon: Icon(
-                Icons.arrow_back_ios_new,
-                color: Colors.white,
-              )),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              IconButton(
+                  onPressed: () => Navigator.pop(context),
+                  icon: Icon(
+                    Icons.arrow_back_ios_new,
+                    color: Colors.white,
+                  )),
+                  IconButton(
+                    color: Colors.white,
+                      icon: Icon(Icons.share),
+                      onPressed: () {
+                        Share.share(
+                            'https://tishapp.codepickles.com/DeepLink?placeId=${widget.place.Place_ID}');
+                      }
+                    )
+            ],
+          ),
         ),
       ])),
     );

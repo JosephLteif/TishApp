@@ -81,10 +81,11 @@ class TishAppDescriptionState extends State<TishAppDescription> {
                   titleSpacing: 0,
                   actions: [
                     IconButton(
+                      color: Colors.white,
                       icon: Icon(Icons.share),
                       onPressed: () {
                         Share.share(
-                            'https://tishapp.codepickles.com/DeepLink/${widget.place.Place_ID}');
+                            'https://tishapp.codepickles.com/DeepLink?placeId=${widget.place.Place_ID}');
                       }
                     )
                   ],
